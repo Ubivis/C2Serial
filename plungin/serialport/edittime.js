@@ -86,7 +86,7 @@ AddNumberParam("connectionid", "TThe id of the opened connection.");
 AddComboParamOption("yes");
 AddComboParamOption("no");
 AddComboParam("persistent","Flag indicating whether or not the connection should be left open when the application is suspended.",1);
-AddNumberParam("bufferSize", "The size of the buffer used to receive data.", "4096"");
+AddNumberParam("bufferSize", "The size of the buffer used to receive data.", "4096");
 AddNumberParam("bitrate", "The requested bitrate of the connection to be opened.","9600");
 AddStringParam("path", "The system path of the serial port to open");
 AddAction(2, "update", "Methods", "Update the option settings on an open serial port connection.", "Update the option settings on an open serial port connection.", "update");
