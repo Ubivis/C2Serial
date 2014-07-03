@@ -1,12 +1,12 @@
 function GetPluginSettings()
 {
 	return {
-		"name":			"MyPlugin",				// as appears in 'insert object' dialog, can be changed as long as "id" stays the same
-		"id":			"MyPlugin",				// this is used to identify this plugin and is saved to the project; never change it
+		"name":			"Serial Port",				// as appears in 'insert object' dialog, can be changed as long as "id" stays the same
+		"id":			"SerialPort",				// this is used to identify this plugin and is saved to the project; never change it
 		"version":		"1.0",					// (float in x.y format) Plugin version - C2 shows compatibility warnings based on this
-		"description":	"<appears at the bottom of the insert object dialog>",
-		"author":		"<your name/organisation>",
-		"help url":		"<your website or a manual entry on Scirra.com>",
+		"description":	"Serial Port i/o handling",
+		"author":		"Ubivis Media",
+		"help url":		"https://github.com/Ubivis/C2Serial/",
 		"category":		"General",				// Prefer to re-use existing categories, but you can set anything here
 		"type":			"world",				// either "world" (appears in layout and is drawn), else "object"
 		"rotatable":	true,					// only used when "type" is "world".  Enables an angle property on the object.
