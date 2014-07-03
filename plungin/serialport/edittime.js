@@ -11,7 +11,7 @@ function GetPluginSettings()
 		"type":			"world",				// either "world" (appears in layout and is drawn), else "object"
 		"rotatable":	true,					// only used when "type" is "world".  Enables an angle property on the object.
 		"flags":		0						// uncomment lines to enable flags...
-					//	| pf_singleglobal		// exists project-wide, e.g. mouse, keyboard.  "type" must be "object".
+						| pf_singleglobal		// exists project-wide, e.g. mouse, keyboard.  "type" must be "object".
 					//	| pf_texture			// object has a single texture (e.g. tiled background)
 					//	| pf_position_aces		// compare/set/get x, y...
 					//	| pf_size_aces			// compare/set/get width, height...
@@ -55,15 +55,11 @@ function GetPluginSettings()
 //				script_name);		// corresponding runtime function name
 				
 // example				
-AddObjectParam("Array", "Define an array to load Device info into (Array will be overwritten.");
-AddCondition(0, cf_none, "getDevices", "Methods", "Loads serial device info into {0}", "Loads serial device info into array!", "getDevice");
-AddComboParamOption("yes");
-AddComboParamOption("no");
-AddComboParam("persistent","Flag indicating whether or not the connection should be left open when the application is suspended.",1);
-AddNumberParam("bufferSize", "The size of the buffer used to receive data.", "4096"")
-AddNumberParam("bitrate", "The requested bitrate of the connection to be opened.","9600")
-AddStringParam("path", "The system path of the serial port to open")
-AddCondition(1, cf_none, "connect", "Methods", "Connect to {3}", "Connects to a given serial port.", "connect")
+
+AddNumberParam("connectionid", "TThe id of the opened connection.");
+AddCondition(0, cf_trigger, "onReceive", "Events", "Event raised when data has been read from {0}", "Event raised when data has been read from the connection.", "onReceive");
+AddNumberParam("connectionid", "TThe id of the opened connection.");
+AddCondition(0, cf_trigger, "onReceiveError", "Events", "Event raised on error while waiting for {0}", "Event raised when an error occurred while the runtime was waiting for data on the serial port. Once this event is raised, the connection may be set to paused. A 'timeout' error does not pause the connection.", "onReceiveError");
 
 ////////////////////////////////////////
 // Actions
@@ -77,8 +73,45 @@ AddCondition(1, cf_none, "connect", "Methods", "Connect to {3}", "Connects to a 
 //			 script_name);		// corresponding runtime function name
 
 // example
-AddStringParam("Message", "Enter a string to alert.");
-AddAction(0, af_none, "Alert", "My category", "Alert {0}", "Description for my action!", "MyAction");
+AddObjectParam("Array", "Define an array to load Device info into (Array will be overwritten.");
+AddAction(0, "getDevices", "Methods", "Loads serial device info into {0}", "Loads serial device info into array!", "getDevice");
+AddComboParamOption("yes");
+AddComboParamOption("no");
+AddComboParam("persistent","Flag indicating whether or not the connection should be left open when the application is suspended.",1);
+AddNumberParam("bufferSize", "The size of the buffer used to receive data.", "4096"");
+AddNumberParam("bitrate", "The requested bitrate of the connection to be opened.","9600");
+AddStringParam("path", "The system path of the serial port to open");
+AddAction(1, "connect", "Methods", "Connect to {3}", "Connects to a given serial port.", "connect");
+AddNumberParam("connectionid", "TThe id of the opened connection.");
+AddComboParamOption("yes");
+AddComboParamOption("no");
+AddComboParam("persistent","Flag indicating whether or not the connection should be left open when the application is suspended.",1);
+AddNumberParam("bufferSize", "The size of the buffer used to receive data.", "4096"");
+AddNumberParam("bitrate", "The requested bitrate of the connection to be opened.","9600");
+AddStringParam("path", "The system path of the serial port to open");
+AddAction(2, "update", "Methods", "Update the option settings on an open serial port connection.", "Update the option settings on an open serial port connection.", "update");
+AddNumberParam("connectionid", "The id of the opened connection.");
+AddAction(3, "disconnect", "Methods", "Disconnect from a serial port", "Disconnect from a serial port", "disconnect");
+AddNumberParam("connectionid", "The id of the opened connection.");
+AddComboParamOption("pause");
+AddComboParamOption("unpause");
+AddComboParam("paused","Flag to indicate wheter to pause or unpause.",0);
+AddAction(4, "setPaused", "Methods", "Pauses or unpauses an open connection", "Pauses or unpauses an open connection", "setPaused");
+AddNumberParam("connectionid", "The id of the opened connection.");
+AddAction(5, "getInfo", "Methods", "Retrieves the state of a given connection.", "Retrieves the state of a given connection.", "getInfo");
+AddAction(6, "getConnections", "Methods", "Retrieves the list of currently opened serial port connections owned by the application.", "Retrieves the list of currently opened serial port connections owned by the application.", "getConnections");
+AddNumberParam("connectionid", "The id of the opened connection.");
+AddStringParam("data", "The data to send.");
+AddAction(7, "send", "Methods", "Write {1} to {0}", "Writes data to a given connection", "send");
+AddNumberParam("connectionid", "The id of the opened connection.");
+AddAction(8, "flush", "Methods", "Flushed all bytes in the given connections input and output buffers.", "Flushed all bytes in the given connections input and output buffers.", "flush");
+AddNumberParam("connectionid", "The id of the opened connection.");
+AddAction(9, "getControlSignals", "Retrieves the state of control signals on a given connection.", "Retrieves the state of control signals on a given connection.", "getControlSignals");
+AddNumberParam("connectionid", "The id of the opened connection.");
+AddComboParamOption("DTR (Data Terminal Ready)");
+AddComboParamOption("RTS (Request To Send)");
+AddComboParam("signal","The set of signal changes to send to the device.",0);
+AddAction(10, "setControlSignals", "Set Signal to {1} on {0}.", "Sets the state of control signals on a given connection.", "setControlSignals");
 
 ////////////////////////////////////////
 // Expressions
@@ -92,7 +125,8 @@ AddAction(0, af_none, "Alert", "My category", "Alert {0}", "Description for my a
 //				 description);	// description in expressions panel
 
 // example
-AddExpression(0, ef_return_number, "Leet expression", "My category", "MyExpression", "Return the number 1337.");
+AddExpression(0, ef_return_string, "Message", "Messages", "ReceivedMessage", "Message that have been received from serial port.");
+AddExpression(0, ef_return_number, "ErrorMessage", "Messages", "ReceivedError", "Error that have been received from serial port.");
 
 ////////////////////////////////////////
 ACESDone();
@@ -108,7 +142,7 @@ ACESDone();
 // new cr.Property(ept_link,		name,	link_text,		description, "firstonly")		// has no associated value; simply calls "OnPropertyChanged" on click
 
 var property_list = [
-	new cr.Property(ept_integer, 	"My property",		77,		"An example property.")
+
 	];
 	
 // Called by IDE when a new object type is to be created
