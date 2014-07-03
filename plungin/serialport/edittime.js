@@ -55,8 +55,15 @@ function GetPluginSettings()
 //				script_name);		// corresponding runtime function name
 				
 // example				
-AddNumberParam("Number", "Enter a number to test if positive.");
-AddCondition(0, cf_none, "Is number positive", "My category", "{0} is positive", "Description for my condition!", "MyCondition");
+AddObjectParam("Array", "Define an array to load Device info into (Array will be overwritten.");
+AddCondition(0, cf_none, "getDevices", "Methods", "Loads serial device info into {0}", "Loads serial device info into array!", "getDevice");
+AddComboParamOption("yes");
+AddComboParamOption("no");
+AddComboParam("persistent","Flag indicating whether or not the connection should be left open when the application is suspended.",1);
+AddNumberParam("bufferSize", "The size of the buffer used to receive data.", "4096"")
+AddNumberParam("bitrate", "The requested bitrate of the connection to be opened.","9600")
+AddStringParam("path", "The system path of the serial port to open")
+AddCondition(1, cf_none, "connect", "Methods", "Connect to {3}", "Connects to a given serial port.", "connect")
 
 ////////////////////////////////////////
 // Actions
