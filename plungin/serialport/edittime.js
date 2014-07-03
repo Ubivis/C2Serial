@@ -78,7 +78,7 @@ AddAction(0, "getDevices", "Methods", "Loads serial device info into {0}", "Load
 AddComboParamOption("yes");
 AddComboParamOption("no");
 AddComboParam("persistent","Flag indicating whether or not the connection should be left open when the application is suspended.",1);
-AddNumberParam("bufferSize", "The size of the buffer used to receive data.", "4096"");
+AddNumberParam("bufferSize", "The size of the buffer used to receive data.", "4096");
 AddNumberParam("bitrate", "The requested bitrate of the connection to be opened.","9600");
 AddStringParam("path", "The system path of the serial port to open");
 AddAction(1, "connect", "Methods", "Connect to {3}", "Connects to a given serial port.", "connect");
